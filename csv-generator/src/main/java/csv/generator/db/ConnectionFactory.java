@@ -2,6 +2,7 @@ package csv.generator.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import org.apache.logging.log4j.Level;
 
@@ -9,20 +10,18 @@ import csv.generator.Init;
 import csv.generator.log.Log;
 
 public class ConnectionFactory {
+	
+	private static Connection connection;
 
-	public static Connection getConnection() {
-		Connection connection = null;
+	public static Connection getConnection() throws SQLException{
 		try {
 			connection = DriverManager.getConnection(Init.getInfoConnection().getProperty("url"), Init.getInfoConnection());
-		} catch (Exception e) {
+			return connection;
+		} catch (SQLException e) {
 			Log.logger.error("Não foi possível se conectar ao banco de dados");
-
-			if (Log.logger.getLevel().compareTo(Level.DEBUG) == 0) {
-				Log.logger.debug(Init.getInfoConnection());
-				e.printStackTrace();
-			}
-			System.exit(1);
+			Log.logger.error(Init.getInfoConnection());
+			Log.logger.catching(Level.DEBUG, e);
+			throw e;
 		}
-		return connection;
 	}
 }

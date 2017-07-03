@@ -24,6 +24,7 @@ public class Init {
 		Log.logger.info("Iniciando processamento");
 		new Init();
 		new Generator().generate();
+		Log.logger.info("Processo encerrado");
 	}
 	
 	private void getInfo() throws IOException {
