@@ -38,10 +38,11 @@ public class Generator {
 				conn.close();
 				System.exit(1);
 			}
-
+			
+			
 			FileReader fileReader = new FileReader(fileObject);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
+			
 			Log.logger.info("Recuperando script do arquivo lido");
 			StringBuilder sql = new StringBuilder();
 			String line;
@@ -76,15 +77,9 @@ public class Generator {
 	}
 
 	public void writer(ResultSet resultSet, String fileName) throws IOException, SQLException {
-		File path = new File(Init.getDirPaste());
+		File path = new File(Init.getDirPaste().getAbsolutePath(), fileName);
 		
-		if(!path.exists() || !path.isDirectory()){
-			Log.logger.error("Diretório[dirPaste] " + path + " não existe ou não é um diretório valido");
-			conn.close();
-			System.exit(1);
-		}
-	
-		CSVWriter writer = new CSVWriter(new FileWriter(path + "/" + fileName));
+		CSVWriter writer = new CSVWriter(new FileWriter(path));
 		writer.writeAll(resultSet, true);
 		writer.close();
 	}

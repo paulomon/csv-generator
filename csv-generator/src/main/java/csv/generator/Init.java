@@ -1,5 +1,6 @@
 package csv.generator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -7,14 +8,13 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import csv.generator.log.Log;
 
 public class Init {
 	
 	private static Properties info;
+	private static File dirPaste;
 	
 	public Init() throws IOException {
 		getInfo();
@@ -39,6 +39,13 @@ public class Init {
 		
 		info = new Properties();
 		info.load(resourceAsStream);
+		
+		Log.logger.info("Recuperando dirPaste");
+		dirPaste = new File(info.getProperty("dirPaste"));
+		if(!dirPaste.exists() || !dirPaste.isDirectory()){
+			Log.logger.error("Diretório[dirPaste] " + Init.getDirPaste() + " não existe ou não é um diretório valido");
+			System.exit(1);
+		}
 	}
 	
 	public static Properties getInfoConnection(){
@@ -70,8 +77,8 @@ public class Init {
 		return files;
 	}
 	
-	public static String getDirPaste(){
-		return info.getProperty("dirPaste");
+	public static File getDirPaste(){
+		return dirPaste;
 	}
 	
 }
