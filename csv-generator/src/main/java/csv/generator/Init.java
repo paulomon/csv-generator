@@ -1,6 +1,7 @@
 package csv.generator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -16,29 +17,31 @@ public class Init {
 	private static Properties info;
 	private static File dirPaste;
 	
-	public Init() throws IOException {
-		getInfo();
-	}
-	
-	public static void main(String[] args) throws SQLException, IOException {
+	public Init() throws IOException, SQLException {
+		System.setProperty("log4j.configurationFile", "Log4j2.xml");
+		
 		Log.logger.info("Iniciando processamento");
-		new Init();
+		getInfo();
 		new Generator().generate();
 		Log.logger.info("Processo encerrado");
 	}
 	
+	public static void main(String[] args) throws SQLException, IOException {
+		new Init();
+	}
+	
 	private void getInfo() throws IOException {
 		Log.logger.info("Recuperando connection.properties");
+		File file = new File("connection.properties");
 		
-		InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("connection.properties");
-		
-		if(resourceAsStream == null){
+		if(!file.exists()){
 			Log.logger.error("connection.properties não encontrado");
+			System.out.print(getCurrentPath().concat("connection.properties"));
 			System.exit(1);
 		}
 		
 		info = new Properties();
-		info.load(resourceAsStream);
+		info.load(new FileInputStream(file));
 		
 		Log.logger.info("Recuperando dirPaste");
 		dirPaste = new File(info.getProperty("dirPaste"));
@@ -81,4 +84,7 @@ public class Init {
 		return dirPaste;
 	}
 	
+	private String getCurrentPath(){
+		return System.getProperty("user.dir");
+	}
 }

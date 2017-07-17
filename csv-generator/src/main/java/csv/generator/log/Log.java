@@ -10,5 +10,6 @@ import org.apache.logging.log4j.Logger;
  */
 
 public class Log {
+	
 	public static Logger logger = LogManager.getLogger("csv.generator");
 }
