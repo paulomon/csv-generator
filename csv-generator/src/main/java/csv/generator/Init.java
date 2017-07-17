@@ -36,7 +36,6 @@ public class Init {
 		
 		if(!file.exists()){
 			Log.logger.error("connection.properties não encontrado");
-			System.out.print(getCurrentPath().concat("connection.properties"));
 			System.exit(1);
 		}
 		
@@ -44,7 +43,13 @@ public class Init {
 		info.load(new FileInputStream(file));
 		
 		Log.logger.info("Recuperando dirPaste");
-		dirPaste = new File(info.getProperty("dirPaste"));
+		try{
+			dirPaste = new File(info.getProperty("dirPaste"));	
+		}catch(NullPointerException e){
+			Log.logger.error("Tag dirPaste não encontrada");
+			System.exit(1);
+		}
+		
 		if(!dirPaste.exists() || !dirPaste.isDirectory()){
 			Log.logger.error("Diretório[dirPaste] " + Init.getDirPaste() + " não existe ou não é um diretório valido");
 			System.exit(1);
@@ -82,9 +87,5 @@ public class Init {
 	
 	public static File getDirPaste(){
 		return dirPaste;
-	}
-	
-	private String getCurrentPath(){
-		return System.getProperty("user.dir");
 	}
 }
