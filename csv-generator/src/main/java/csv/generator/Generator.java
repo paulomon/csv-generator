@@ -1,12 +1,8 @@
 package csv.generator;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -14,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.opencsv.CSVWriter;
 
@@ -44,25 +39,13 @@ public class Generator {
 				System.exit(1);
 			}
 			
-			
-			FileReader fileReader = new FileReader(fileObject);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			byte[] bytes = Files.readAllBytes(Paths.get(file));
-			FileInputStream fis = new FileInputStream(fileObject);
-			
 			Log.logger.info("Recuperando script do arquivo lido");
-			StringBuilder sql = new StringBuilder();
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-				sql.append(line);
-			}
-
-			bufferedReader.close();
-			fileReader.close();
-
+			byte[] readAllBytes = Files.readAllBytes(Paths.get(file));
+			String sql = new String(readAllBytes);
+			
 			Log.logger.info("Executando script e recuperando dados");
-			Log.logger.debug(sql.toString());
-			ResultSet resultSet = getResultSet(sql.toString());
+			Log.logger.debug(sql);
+			ResultSet resultSet = getResultSet(sql);
 			try {
 				Log.logger.info("Gerando arquivo csv " + fileObject.getName().replace(".sql", ".csv"));
 				writer(resultSet, fileObject.getName().replace(".sql", ".csv"));
